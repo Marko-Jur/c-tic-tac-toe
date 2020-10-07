@@ -1,0 +1,281 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+void displayboard();
+void markboard (int mark, int count, char symbol);
+int checkforwin(void);
+int checkforoverlap(int checker);
+void restartgame (void);
+int player1=0;
+int player2score=0;
+
+char square [10]={'0','1','2','3','4','5','6','7','8','9'} ;
+
+int main()
+{
+
+    int playermark;
+    char playersymbol;
+    int count=1;
+    int checkvalue= checkforwin();
+
+START:
+
+system("cls");
+
+    square[0]='0';
+    square [1]='1';
+    square [2]='2';
+    square[3]='3';
+    square [4]='4';
+    square [5]='5';
+    square[6]='6';
+    square [7]='7';
+    square [8]='8';
+    square[9]='9';
+
+   do
+{
+
+displayboard();
+if (count%2!=0)
+{
+     printf("\nIt is player 1's turn: ");
+     scanf("%i", &playermark);
+     playersymbol='x';
+     int overlap=checkforoverlap(playermark);
+
+     if (playermark<1 || playermark>9||overlap==1)
+     {
+         while (playermark<1 || playermark>9||overlap==1)
+         {
+             if (playermark<1 || playermark>9)
+            {
+                printf("That is not a valid number, please pick another number: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+            if (overlap==1)
+            {
+                printf("Sorry, that value is already taken. Please pick another: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+         }
+     }
+
+
+}
+
+
+
+else if (count%2==0)
+{
+    printf("\nIt is player 2's turn: ");
+     scanf("%i", &playermark);
+     playersymbol='o';
+     int overlap=checkforoverlap(playermark);
+
+     if (playermark<1 || playermark>9||overlap==1)
+     {
+         while (playermark<1 || playermark>9||overlap==1)
+         {
+             if (playermark<1 || playermark>9)
+            {
+                printf("That is not a valid number, please pick another number: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+            if (overlap==1)
+            {
+                printf("Sorry, that value is already taken. Please pick another: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+         }
+     }
+    }
+
+    markboard(playermark, count, playersymbol);
+    count++;
+
+    checkvalue=checkforwin();
+
+    if (checkvalue==0)
+    {
+        markboard(playermark, count, playersymbol);
+        displayboard();
+
+int winplayer = (count-1)%2;
+
+{
+     if (winplayer==1 && checkvalue!=-1)
+            {
+                player1++;
+
+            }
+            else
+            {
+                player2score++;
+
+            }
+}
+
+            printf("\n\n\n PLAYER %i WINSSSSSS!!!!!!!!!!!!!\n\n", winplayer==0 ? 2 : 1);
+
+
+
+
+    }
+}
+
+while (checkvalue==1);
+
+int draw=checkvalue;
+
+if (draw==-1)
+{
+    printf("It's a draw\n\n");
+}
+
+int playcontinues;
+
+printf("Would you like to play again? Press 1 to continue, or any other number to exit: ");
+scanf("%i", &playcontinues);
+
+if (playcontinues==1)
+{
+    goto START;
+}
+
+}
+
+void displayboard()
+{
+    system("cls");
+
+
+    printf("                    Tic Tac Toe\n");
+    printf("Player 1: %i.                                  Player 2: %i.\n\n\n\n", player1, player2score);
+
+printf("        |            |           |           |\n");
+printf("        |      %c     |     %c     |     %c     |\n", square [1], square[2], square[3]);
+printf("        |------------|-----------|-----------|\n");
+printf("        |      %c     |     %c     |     %c     |\n", square [4], square[5], square[6]);
+printf("        |------------|-----------|-----------|\n");
+printf("        |      %c     |     %c     |     %c     |\n", square [7], square[8], square[9]);
+printf("        |------------|-----------|-----------|\n");
+printf("        |            |           |           |\n");
+
+
+}
+
+void markboard (int mark, int count, char symbol)
+{
+
+if (count%2!=0)
+{
+    square[mark]=symbol;
+}
+else
+{
+    square[mark]=symbol;
+}
+}
+
+int checkforwin(void)
+{
+
+    int value = 1;
+
+ if (square [1]== square[2]&& square[2]== square[3])
+  {
+     value = 0;
+  }
+
+ else if (square [4]== square[5]&& square[5]== square[6])
+  {
+     value = 0;
+  }
+
+ else if (square [7]== square[8]&& square[8]== square[9])
+  {
+     value = 0;
+  }
+
+ else if (square [1]== square[5]&& square[5]== square[9])
+  {
+     value = 0;
+  }
+
+ else if (square [3]== square[5]&& square[5]== square[7])
+  {
+     value = 0;
+  }
+
+ else if (square [1]== square[4]&& square[4]== square[7])
+  {
+     value = 0;
+  }
+
+  else if (square [2]== square[5]&& square[5]== square[8])
+  {
+     value = 0;
+  }
+
+  else if (square [3]== square[7]&& square[7]== square[9])
+  {
+     value = 0;
+  }
+
+  else if (square[1]!= '1' && square[2]!= '2' &&square[3]!= '3' &&square[4]!= '4' &&square[5]!= '5' &&square[6]!= '6' &&square[7]!= '7' &&square[8]!= '8' &&square[9]!='9')
+  {
+      value = -1;
+  }
+
+
+  return value;
+}
+
+
+int checkforoverlap(int checker)
+{
+
+    int value;
+
+    if (square[checker]=='x' || square[checker]=='o')
+    {
+        value=1;
+    }
+
+    else
+    {
+        value=0;
+    }
+
+    return value;
+}
+
+
+void restartgame(void)
+{
+    square[0]='0';
+    square [1]='1';
+    square [2]='2';
+    square[3]='3';
+    square [4]='4';
+    square [5]='5';
+    square[6]='6';
+    square [7]='7';
+    square [8]='8';
+    square[9]='9';
+
+
+
+
+}

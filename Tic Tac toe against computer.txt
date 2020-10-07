@@ -1,0 +1,2327 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <windows.h>
+
+
+void displayboard();
+void markboard (int mark, int count, char symbol);
+int checkforwin(void);
+int checkforoverlap(int checker);
+void restartgame (void);
+int computerchoice (void);
+int computersecondchoice (void);
+int defence (void);
+int checkfordefence (void);
+int player1=0;
+int computerscore=0;
+int checkforattack(void);
+int introduction (void);
+int tournamentwin (int gamesplayed);
+
+
+char square [10]={'0','1','2','3','4','5','6','7','8','9'} ;
+
+int main()
+{
+    INTRODUCTION:
+        for (int labelcount=1;labelcount<1;labelcount++)
+        {
+
+        }
+int amountofgames=introduction();
+int games=1;
+
+    time_t t;
+    srand((unsigned)time(&t));
+
+    int randomcounter=1;
+    int playermark;
+    char playersymbol;
+    int count=1;
+    int checkvalue= checkforwin();
+
+START:
+for (;games<=amountofgames;games++)
+{
+system("cls");
+
+    square[0]='0';
+    square [1]='1';
+    square [2]='2';
+    square[3]='3';
+    square [4]='4';
+    square [5]='5';
+    square[6]='6';
+    square [7]='7';
+    square [8]='8';
+    square[9]='9';
+
+   do
+{
+
+displayboard();
+if (count%2!=0)
+{
+     printf("\nIt is player 1's turn: ");
+     scanf("%i", &playermark);
+     playersymbol='x';
+     int overlap=checkforoverlap(playermark);
+
+     if (playermark<1 || playermark>9||overlap==1)
+     {
+         while (playermark<1 || playermark>9||overlap==1)
+         {
+             if (playermark<1 || playermark>9)
+            {
+                printf("That is not a valid number, please pick another number: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+            if (overlap==1)
+            {
+                printf("Sorry, that value is already taken. Please pick another: ");
+                scanf("%i", &playermark);
+                overlap=checkforoverlap(playermark);
+            }
+
+         }
+     }
+
+
+}
+
+
+
+else if (count%2==0)
+{
+    if (randomcounter<=1)
+    {
+
+   playermark = (rand()%9)+1;
+     playersymbol='o';
+
+     int overlap=checkforoverlap(playermark);
+
+     if (overlap==1)
+     {
+               playermark=computerchoice();
+               printf("%i", playermark);
+
+    }
+
+        randomcounter++;
+    }
+
+    else if (randomcounter>1)
+    {
+         playersymbol='o';
+
+         int defendornot=checkfordefence();
+         int attackornot=checkforattack();
+
+         if (attackornot==1)
+         {
+             playermark=computerchoice();
+         }
+         else if (defendornot==1)
+             {
+                 playermark=defence();
+                 printf("DEFENDING");
+                 Sleep (1000);
+             }
+         else
+            {
+        playermark=computerchoice();
+        randomcounter++;
+        }
+
+    }
+
+    }
+
+    markboard(playermark, count, playersymbol);
+    count++;
+
+    checkvalue=checkforwin();
+
+    if (checkvalue==0)
+    {
+        markboard(playermark, count, playersymbol);
+        displayboard();
+
+
+
+int winplayer = (count-1)%2;
+ if (winplayer==1 && checkvalue!=-1)
+            {
+                player1++;
+            }
+            else
+            {
+                computerscore++;
+            }
+
+            printf("\n\n\n PLAYER %i WINSSSSSS!!!!!!!!!!!!!\n\n", winplayer==0 ? 2 : 1);
+            Sleep(1000);
+
+
+
+
+    }
+}
+
+while (checkvalue==1);
+
+int draw=checkvalue;
+
+if (draw==-1)
+{
+    printf("It's a draw\n\n");
+}
+
+}
+
+int playcontinues;
+
+printf("Would you like to return to the main menu? Press 1 to return, or any other number to exit: ");
+scanf("%i", &playcontinues);
+
+if (playcontinues==1)
+{
+    system("cls");
+    goto INTRODUCTION;
+}
+
+}
+
+void displayboard()
+{
+    system("cls");
+
+
+    printf("Player 1 Score: %i.              Tic Tac Toe               Computer Score: %i. \n\n\n\n", player1, computerscore);
+
+printf("                |            |           |           |\n");
+printf("                |      %c     |     %c     |     %c     |\n", square [1], square[2], square[3]);
+printf("                |------------|-----------|-----------|\n");
+printf("                |      %c     |     %c     |     %c     |\n", square [4], square[5], square[6]);
+printf("                |------------|-----------|-----------|\n");
+printf("                |      %c     |     %c     |     %c     |\n", square [7], square[8], square[9]);
+printf("                |------------|-----------|-----------|\n");
+printf("                |            |           |           |\n");
+
+
+}
+
+void markboard (int mark, int count, char symbol)
+{
+
+if (count%2!=0)
+{
+    square[mark]=symbol;
+}
+else
+{
+    square[mark]=symbol;
+}
+}
+
+int checkforwin(void)
+{
+
+    int value = 1;
+
+ if (square [1]== square[2]&& square[2]== square[3])
+  {
+     value = 0;
+  }
+
+ else if (square [4]== square[5]&& square[5]== square[6])
+  {
+     value = 0;
+  }
+
+ else if (square [7]== square[8]&& square[8]== square[9])
+  {
+     value = 0;
+  }
+
+ else if (square [1]== square[5]&& square[5]== square[9])
+  {
+     value = 0;
+  }
+
+ else if (square [3]== square[5]&& square[5]== square[7])
+  {
+     value = 0;
+  }
+
+ else if (square [1]== square[4]&& square[4]== square[7])
+  {
+     value = 0;
+  }
+
+  else if (square [2]== square[5]&& square[5]== square[8])
+  {
+     value = 0;
+  }
+
+   else if (square [3]== square[6]&& square[6]== square[9])
+  {
+     value = 0;
+  }
+
+  else if (square[1]!= '1' && square[2]!= '2' &&square[3]!= '3' &&square[4]!= '4' &&square[5]!= '5' &&square[6]!= '6' &&square[7]!= '7' &&square[8]!= '8' &&square[9]!='9')
+  {
+      value = -1;
+  }
+
+
+  return value;
+}
+
+
+int checkforoverlap(int checker)
+{
+
+    int value;
+
+    if (square[checker]=='x' || square[checker]=='o')
+    {
+        value=1;
+    }
+
+    else
+    {
+        value=0;
+    }
+
+    return value;
+}
+
+
+void restartgame(void)
+{
+    square[0]='0';
+    square [1]='1';
+    square [2]='2';
+    square[3]='3';
+    square [4]='4';
+    square [5]='5';
+    square[6]='6';
+    square [7]='7';
+    square [8]='8';
+    square[9]='9';
+
+
+
+
+}
+
+int computerchoice (void)
+{
+    int playermark;
+
+
+    //rows//
+    if (square[1]=='o' && square[2]=='o')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+
+                        playermark=computersecondchoice();
+                        return playermark;
+
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[1]=='o' && square[3]=='o')
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+
+                        playermark=computersecondchoice();
+                        return playermark;
+
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='o' && square[3]=='o')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            else if (square[4]=='o' && square[6]=='o')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[5]=='o' && square[6]=='o')
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[4]=='o' && square[5]=='o')
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            else if (square[7]=='o' && square[8]=='o')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else  if (square[9]=='o' && square[8]=='o')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[9]=='o' && square[7]=='o')
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            //columns//
+
+               else if (square[1]=='o' && square[7]=='o')
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[1]=='o' && square[4]=='o')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[7]=='o' && square[4]=='o')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='o' && square[5]=='o')
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[8]=='o' && square[5]=='o')
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else   if (square[8]=='o' && square[2]=='o')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                 else  if (square[3]=='o' && square[9]=='o')
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[3]=='o' && square[6]=='o')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[9]=='o' && square[6]=='o')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            //diagnols//
+
+           else  if (square[9]=='o' && square[5]=='o')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='o' && square[5]=='o')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='o' && square[9]=='o')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[3]=='o' && square[5]=='o')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+               else    if (square[7]=='o' && square[5]=='o')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                  else     if (square[3]=='o' && square[7]=='o')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                 if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+
+      else if (square[1]=='x' && square[2]=='x')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[1]=='x' && square[3]=='x')
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='x' && square[3]=='x')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            else if (square[4]=='x' && square[6]=='x')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[5]=='x' && square[6]=='x')
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[4]=='x' && square[5]=='x')
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            else if (square[7]=='x' && square[8]=='x')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else  if (square[9]=='x' && square[8]=='x')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[9]=='x' && square[7]=='x')
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            //columns//
+
+               else if (square[1]=='x' && square[7]=='x')
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[1]=='x' && square[4]=='x')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else if (square[7]=='x' && square[4]=='x')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='x' && square[5]=='x')
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[8]=='x' && square[5]=='x')
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else   if (square[8]=='x' && square[2]=='x')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                 else  if (square[3]=='x' && square[9]=='x')
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[3]=='x' && square[6]=='x')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+             else if (square[9]=='x' && square[6]=='x')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+            //diagnols//
+
+           else  if (square[9]=='x' && square[5]=='x')
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='x' && square[5]=='x')
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='x' && square[9]=='x')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[3]=='x' && square[5]=='x')
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+               else    if (square[7]=='x' && square[5]=='x')
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+                  else     if (square[3]=='x' && square[7]=='x')
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                 if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    return playermark;
+                }
+
+            }
+
+
+
+
+
+
+            else
+            {
+                playermark=computersecondchoice();
+            }
+
+
+
+
+return playermark;
+}
+
+
+
+
+
+
+int computersecondchoice (void)
+{
+    int playermark;
+
+  for (int count=1;count<=9;count++)
+    {
+        if (square[count]!='x'&&square[count]!='o')
+        {
+            playermark=count;
+        }
+    }
+
+
+
+    return playermark;
+
+}
+
+int defence (void)
+{
+    int playermark;
+    int controlarray[23]={0,};
+
+
+
+
+      if (square[1]=='x' && square[2]=='x' && controlarray[0]<1)
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[0]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[0]=1;
+                    return playermark;
+                }
+
+            }
+
+              else if (square[1]=='x' && square[3]=='x' && controlarray[1]<1)
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[1]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[1]=1;
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='x' && square[3]=='x' && controlarray[2]<1)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[2]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[2]=1;
+                    return playermark;
+                }
+
+            }
+
+            else if (square[4]=='x' && square[6]=='x' && controlarray[3]<1)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[3]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[3]=1;
+                    return playermark;
+                }
+
+            }
+
+             else if (square[5]=='x' && square[6]=='x' && controlarray[4]<1)
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[4]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[4]=1;
+                    return playermark;
+                }
+
+            }
+
+           else if (square[4]=='x' && square[5]=='x' && controlarray[5]<1)
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[5]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[5]=1;
+                    return playermark;
+                }
+
+            }
+
+            else if (square[7]=='x' && square[8]=='x' && controlarray[6]<1)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[6]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[6]=1;
+                    return playermark;
+                }
+
+            }
+
+             else  if (square[9]=='x' && square[8]=='x' && controlarray[7]<1)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[7]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[7]=1;
+                    return playermark;
+                }
+
+            }
+
+              else if (square[9]=='x' && square[7]=='x' && controlarray[8]<1)
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[8]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[8]=1;
+                    return playermark;
+                }
+
+            }
+
+            //columns//
+
+               else if (square[1]=='x' && square[7]=='x' && controlarray[9]<1)
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[9]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[9]=1;
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[1]=='x' && square[4]=='x' && controlarray[10]<1)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[10]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[10]=1;
+                    return playermark;
+                }
+
+            }
+
+              else if (square[7]=='x' && square[4]=='x' && controlarray[11]<1)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[11]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[11]=1;
+                    return playermark;
+                }
+
+            }
+
+             else if (square[2]=='x' && square[5]=='x' && controlarray[12]<1)
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[12]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[12]=1;
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[8]=='x' && square[5]=='x' && controlarray[13]<1)
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[13]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[13]=1;
+                    return playermark;
+                }
+
+            }
+
+                else   if (square[8]=='x' && square[2]=='x' && controlarray[14]<1)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[14]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[14]=1;
+                    return playermark;
+                }
+
+            }
+
+                 else  if (square[3]=='x' && square[9]=='x' && controlarray[15]<1)
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[15]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[15]=1;
+                    return playermark;
+                }
+
+            }
+
+                else  if (square[3]=='x' && square[6]=='x' && controlarray[16]<1)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[16]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[16]=1;
+                    return playermark;
+                }
+
+            }
+
+             else if (square[9]=='x' && square[6]=='x' && controlarray[17]<1)
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[17]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[17]=1;
+                    return playermark;
+                }
+
+            }
+
+            //diagnols//
+
+           else  if (square[9]=='x' && square[5]=='x' && controlarray[18]<1)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[18]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[18]=1;
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='x' && square[5]=='x' && controlarray[19]<1)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[19]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[19]=1;
+                    return playermark;
+                }
+
+            }
+
+           else if (square[1]=='x' && square[9]=='x' && controlarray[20]<1)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[20]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[20]=1;
+                    return playermark;
+                }
+
+            }
+
+              else  if (square[3]=='x' && square[5]=='x' && controlarray[21]<1)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[21]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[21]=1;
+                    return playermark;
+                }
+
+            }
+
+               else    if (square[7]=='x' && square[5]=='x' && controlarray[22]<1)
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[22]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[22]=1;
+                    return playermark;
+                }
+
+            }
+
+                  else     if (square[3]=='x' && square[7]=='x' && controlarray[23]<1)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                 if (overlap==1)
+                {
+                    playermark=computersecondchoice();
+                    controlarray[23]=1;
+                    return playermark;
+                }
+                else if(overlap==0)
+                {
+                    controlarray[23]=1;
+                    return playermark;
+                }
+
+                else
+                {
+                    playermark=computersecondchoice();
+                    return playermark;
+                }
+
+            }
+
+
+            return playermark;
+}
+
+int checkfordefence (void)
+{
+       int defence;
+      if (square[1]=='x' && square[2]=='x')
+            {
+               defence=1;
+
+            }
+
+              else if (square[1]=='x' && square[3]=='x')
+            {
+              defence=1;
+
+            }
+
+             else if (square[2]=='x' && square[3]=='x')
+            {
+                defence=1;
+
+            }
+
+            else if (square[4]=='x' && square[6]=='x')
+            {
+                defence=1;
+
+            }
+
+             else if (square[5]=='x' && square[6]=='x')
+            {
+              defence=1;
+
+            }
+
+           else if (square[4]=='x' && square[5]=='x')
+            {
+               defence=1;
+
+            }
+
+            else if (square[7]=='x' && square[8]=='x')
+            {
+              defence=1;
+
+            }
+
+             else  if (square[9]=='x' && square[8]=='x')
+            {
+              defence=1;
+
+            }
+
+              else if (square[9]=='x' && square[7]=='x')
+            {
+               defence=1;
+
+            }
+
+            //columns//
+
+               else if (square[1]=='x' && square[7]=='x')
+            {
+               defence=1;
+
+            }
+
+                else  if (square[1]=='x' && square[4]=='x')
+            {
+              defence=1;
+
+            }
+
+              else if (square[7]=='x' && square[4]=='x')
+            {
+               defence=1;
+
+            }
+
+             else if (square[2]=='x' && square[5]=='x')
+            {
+                defence=1;
+
+            }
+
+              else  if (square[8]=='x' && square[5]=='x')
+            {
+               defence=1;
+            }
+
+                else   if (square[8]=='x' && square[2]=='x')
+            {
+                defence=1;
+
+            }
+
+                 else  if (square[3]=='x' && square[9]=='x')
+            {
+               defence=1;
+
+            }
+
+                else  if (square[3]=='x' && square[6]=='x')
+            {
+              defence=1;
+
+            }
+
+             else if (square[9]=='x' && square[6]=='x')
+            {
+                defence=1;
+
+            }
+
+            //diagnols//
+
+           else  if (square[9]=='x' && square[5]=='x')
+            {
+                defence=1;
+
+            }
+
+           else if (square[1]=='x' && square[5]=='x')
+            {
+               defence=1;
+            }
+
+           else if (square[1]=='x' && square[9]=='x')
+            {
+
+               defence=1;
+
+            }
+
+              else  if (square[3]=='x' && square[5]=='x')
+            {
+                defence=1;
+
+            }
+
+               else    if (square[7]=='x' && square[5]=='x')
+            {
+               defence=1;
+
+            }
+
+                  else     if (square[3]=='x' && square[7]=='x')
+            {
+                defence=1;
+
+            }
+
+            else
+            {
+                defence=0;
+            }
+
+            return defence;
+}
+
+int checkforattack(void)
+{
+    int attack=0;
+    int array[23]={0};
+    int playermark;
+
+    if (square[1]=='o' && square[2]=='o' && array[0]==0)
+            {
+
+                int playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                        array[0]=1;
+
+                }
+                else if(overlap==0)
+                {
+                    array[0]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+              else if (square[1]=='o' && square[3]=='o' && array[1]==0)
+            {
+                playermark=2;
+
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                        array[1]=1;
+
+                }
+                else if(overlap==0)
+                {
+                    attack=1;
+                    array[1]=1;
+                    return attack;
+                }
+
+            }
+
+             else if (square[2]=='o' && square[3]=='o' && array[2]==0)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[2]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[2]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+            else if (square[4]=='o' && square[6]=='o' && array[3]==0) /* START HERE */
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[3]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[3]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+             else if (square[5]=='o' && square[6]=='o' &&array[4]==0)
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[4]=1;
+                }
+                else if(overlap==0)
+                {
+                   array[4]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+           else if (square[4]=='o' && square[5]=='o' && array[5]==0)
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[5]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[5]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+            else if (square[7]=='o' && square[8]=='o' && array[6]==0)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[6]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[6]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+             else  if (square[9]=='o' && square[8]=='o' && array[7]==0)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[7]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[7]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+              else if (square[9]=='o' && square[7]=='o' && array[8]==0)
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                   array[8]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[8]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+            //columns//
+
+               else if (square[1]=='o' && square[7]=='o' && array[9]==0)
+            {
+                playermark=4;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[9]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[9]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+                else  if (square[1]=='o' && square[4]=='o' && array[10]==0)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[10]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[10]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+              else if (square[7]=='o' && square[4]=='o' && array[11]==0)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[11]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[11]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+             else if (square[2]=='o' && square[5]=='o' && array[12]==0)
+            {
+                playermark=8;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[12]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[12]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+              else  if (square[8]=='o' && square[5]=='o' && array[13]==0)
+            {
+                playermark=2;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[13]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[13]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+                else   if (square[8]=='o' && square[2]=='o' && array[14]==0)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[14]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[14]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+                 else  if (square[3]=='o' && square[9]=='o' && array[15]==0)
+            {
+                playermark=6;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[15]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[15]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+                else  if (square[3]=='o' && square[6]=='o' && array[16]==0)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[16]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[16]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+             else if (square[9]=='o' && square[6]=='o' && array[17]==0)
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[17]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[17]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+            //diagnols//
+
+           else  if (square[9]=='o' && square[5]=='o' && array[18]==0)
+            {
+                playermark=1;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[18]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[18]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+           else if (square[1]=='o' && square[5]=='o' && array[19]==0)
+            {
+                playermark=9;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[19]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[19]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+           else if (square[1]=='o' && square[9]=='o' && array[20]==0)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[20]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[20]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+              else  if (square[3]=='o' && square[5]=='o' && array[21]==0)
+            {
+                playermark=7;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                    array[21]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[21]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+               else    if (square[7]=='o' && square[5]=='o' && array[22]==0)
+            {
+                playermark=3;
+                int overlap=checkforoverlap(playermark);
+
+                if (overlap==1)
+                {
+                   array[22]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[22]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+                  else     if (square[3]=='o' && square[7]=='o' && array[23]==0)
+            {
+                playermark=5;
+                int overlap=checkforoverlap(playermark);
+
+                 if (overlap==1)
+                {
+                    array[23]=1;
+                }
+                else if(overlap==0)
+                {
+                    array[23]=1;
+                    attack=1;
+                    return attack;
+                }
+
+            }
+
+
+
+return attack;
+
+}
+
+int introduction (void)
+{
+    int gamemode;
+
+
+
+    printf("                                                                                            \n\n\n\n");
+    printf("|                          Welcome to TIC TAC TOE AGAINST THE COMPUTER:                     |\n\n");
+    printf("|                          Please select your game mode:                                    |\n\n" ) ;
+    printf("|                          1) Best of 3(1)                                                  |\n");
+    printf("|                          2) Best of 5(2)                                                  |\n");
+    printf("|                          3) Do or Die (3)                                                 |\n");
+    printf("|                          4) Infinity and beyond(4)                                        |\n");
+    scanf("%i", &gamemode);
+
+    system("cls");
+    if (gamemode==1)
+    {
+        return 3;
+    }
+    else if (gamemode==2)
+    {
+        return 5;
+    }
+
+    else if (gamemode==3)
+    {
+        return 1;
+    }
+
+    else if (gamemode==4)
+    {
+        return 1000;
+    }
+
+
+return gamemode;
+
+
+
+}
